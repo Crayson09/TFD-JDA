@@ -5,7 +5,7 @@ import java.io.File
 
 internal class UserManager {
 
-    private val userFile = File("./language/user.yml")
+    private val userFile = File("./tfd/user.yml")
 
     fun loadUserFile() {
         if (!userFile.exists()) {
@@ -30,13 +30,27 @@ internal class UserManager {
     }
 
     fun getUserLanguage(userID: String): Languages {
+        if (!userFile.exists()) {
+            println("Debug: User file does not exist. Returning primary language.")
+            return TranslationFramework.primaryLanguage
+        }
+
         val lines = userFile.readLines()
         for (line in lines) {
-            if (line.startsWith(userID)) {
-                val langCode = line.split("=")[1]
-                return Languages.fromCode(langCode)
+            if (line.startsWith("$userID=")) {
+                val parts = line.split("=")
+                if (parts.size == 2) {
+                    val langCode = parts[1]
+                    val language = Languages.fromCode(langCode)
+                    println("Debug: Found language for user $userID: $language")
+                    return language
+                } else {
+                    println("Debug: Malformed line for user $userID: $line")
+                }
             }
         }
+
+        println("Debug: No language found for user $userID. Returning primary language.")
         return TranslationFramework.primaryLanguage
     }
 

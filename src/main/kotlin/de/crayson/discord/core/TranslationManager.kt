@@ -1,10 +1,12 @@
 package de.crayson.discord.core
+import de.crayson.discord.core.MessageBuilder.Message
 import de.crayson.discord.lang.Languages
 import java.io.File
 
 internal class TranslationManager {
 
-    private val langFolder = File("language")
+    private val langFolder = File("tfd")
+
 
 
     fun loadTranslation(primaryLanguage: Languages, secondaryLanguage: Languages) {
@@ -21,15 +23,15 @@ internal class TranslationManager {
         }
     }
 
-    fun addTranslation(key: String, primaryValue: String,secondaryValue: String) {
+    fun addTranslation(message: Message) {
         val primaryFile = File(langFolder, "${TranslationFramework.primaryLanguage.code}.yml")
         val secondaryFile = File(langFolder, "${TranslationFramework.secondaryLanguage.code}.yml")
 
         val primaryLines = primaryFile.readLines().toMutableList()
         val secondaryLines = secondaryFile.readLines().toMutableList()
 
-        val primaryTranslation = "$key=$primaryValue"
-        val secondaryTranslation = "$key=$secondaryValue"
+        val primaryTranslation = "${message.key}=${message.defaultValue}"
+        val secondaryTranslation = "${message.key}=${message.translatedValue}"
 
         if (!primaryLines.contains(primaryTranslation)) {
             primaryLines.add(primaryTranslation)

@@ -2,10 +2,11 @@
 plugins {
     kotlin("jvm") version "2.0.21"
     id("com.github.johnrengelman.shadow") version "8.1.1"
+    `maven-publish`
 }
 
 group = "de.crayson"
-version = "1.0"
+version = "dev-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -22,8 +23,20 @@ dependencies {
 
 tasks.jar{
     archiveBaseName.set("tfd")
-    archiveVersion.set("1.0")
+    archiveVersion.set(version.toString())
     archiveClassifier.set("")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            from(components["java"])
+
+            groupId = project.group.toString()
+            artifactId = "tfd"
+            version = project.version.toString()
+        }
+    }
 }
 
 tasks.test {
