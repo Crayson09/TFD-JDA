@@ -18,6 +18,8 @@ dependencies {
 
     implementation("org.yaml:snakeyaml:2.2")
 
+    implementation("net.dv8tion:JDA:5.3.2")
+
     testImplementation(kotlin("test"))
 }
 

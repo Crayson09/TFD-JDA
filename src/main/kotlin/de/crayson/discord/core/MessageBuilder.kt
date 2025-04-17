@@ -1,10 +1,11 @@
 package de.crayson.discord.core
 
+import net.dv8tion.jda.api.entities.Member
+
 class MessageBuilder(val key: String) {
 
     private var defaultValue: String = ""
     private var translatedValue: String = ""
-    private var placeholder: String = ""
 
     fun defaultValue(value: String): MessageBuilder {
         this.defaultValue = value
@@ -15,24 +16,20 @@ class MessageBuilder(val key: String) {
         this.translatedValue = value
         return this
     }
-    fun placeholder(value: String): MessageBuilder {
-        this.placeholder = value
-        return this
-    }
+
 
     fun build(): Message {
-        return Message(key, defaultValue, translatedValue,placeholder)
+        return Message(key, defaultValue, translatedValue)
     }
 
     data class Message(
         val key: String,
         val defaultValue: String,
         val translatedValue: String,
-        val placeholder: String
     ) {
-        fun getTranslated(userId: String): String {
+        fun getTranslated(member: Member): String {
             val userLanguage = TranslationFramework.instance
-                .getUserLanguage(userId)
+                .getUserLanguage(member)
             val translationManager = TranslationManager()
             return translationManager.getTranslation(key, userLanguage)
         }

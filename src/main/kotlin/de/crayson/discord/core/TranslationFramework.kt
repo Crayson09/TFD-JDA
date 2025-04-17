@@ -2,6 +2,7 @@ package de.crayson.discord.core
 
 import de.crayson.discord.core.MessageBuilder.Message
 import de.crayson.discord.lang.Languages
+import net.dv8tion.jda.api.entities.Member
 
 class TranslationFramework(val primary: Languages, val secondary: Languages) {
 
@@ -24,12 +25,12 @@ class TranslationFramework(val primary: Languages, val secondary: Languages) {
         userManager.loadUserFile()
     }
 
-    fun setUserLanguage(userId: String, lang: Languages) {
-        userManager.setUserLanguage(userId, lang)
+    fun setUserLanguage(member: Member, lang: Languages) {
+        userManager.setUserLanguage(member, lang)
     }
 
-    fun getUserLanguage(userId: String): Languages {
-        return userManager.getUserLanguage(userId)
+    fun getUserLanguage(member: Member): Languages {
+        return userManager.getUserLanguage(member)
     }
 
     fun addTranslation(message: Message) {

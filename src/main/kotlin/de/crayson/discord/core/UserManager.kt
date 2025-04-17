@@ -1,7 +1,12 @@
 package de.crayson.discord.core
 
 import de.crayson.discord.lang.Languages
+import net.dv8tion.jda.api.entities.Member
 import java.io.File
+import kotlin.code
+import kotlin.text.get
+import kotlin.text.set
+
 
 internal class UserManager {
 
@@ -13,23 +18,35 @@ internal class UserManager {
         }
     }
 
-    fun setUserLanguage(userID: String, lang: Languages) {
+    fun setUserLanguage(member: Member, lang: Languages) {
+        if (TranslationFramework.primaryLanguage != lang && TranslationFramework.secondaryLanguage != lang) {
+            throw IllegalArgumentException("Ungültige Sprache: ${lang.code}")
+        }
+
+        val userID = member.id
+        val guildID = member.guild.id
         val lines = userFile.readLines().toMutableList()
         var found = false
+
         for (i in lines.indices) {
-            if (lines[i].startsWith(userID)) {
-                lines[i] = "$userID=${lang.code}"
+            if (lines[i].startsWith("$guildID:$userID=")) {
+                lines[i] = "$guildID:$userID=${lang.code}"
                 found = true
                 break
             }
         }
+
         if (!found) {
-            lines.add("$userID=${lang.code}")
+            lines.add("$guildID:$userID=${lang.code}")
         }
+
         userFile.writeText(lines.joinToString("\n"))
     }
 
-    fun getUserLanguage(userID: String): Languages {
+    fun getUserLanguage(member: Member): Languages {
+        val userID = member.id
+        val guildID = member.guild.id
+
         if (!userFile.exists()) {
             println("Debug: User file does not exist. Returning primary language.")
             return TranslationFramework.primaryLanguage
@@ -37,20 +54,20 @@ internal class UserManager {
 
         val lines = userFile.readLines()
         for (line in lines) {
-            if (line.startsWith("$userID=")) {
+            if (line.startsWith("$guildID:$userID=")) {
                 val parts = line.split("=")
                 if (parts.size == 2) {
                     val langCode = parts[1]
                     val language = Languages.fromCode(langCode)
-                    println("Debug: Found language for user $userID: $language")
+                    println("Debug: Found language for user $userID in guild $guildID: $language")
                     return language
                 } else {
-                    println("Debug: Malformed line for user $userID: $line")
+                    println("Debug: Malformed line for user $userID in guild $guildID: $line")
                 }
             }
         }
 
-        println("Debug: No language found for user $userID. Returning primary language.")
+        println("Debug: No language found for user $userID in guild $guildID. Returning primary language.")
         return TranslationFramework.primaryLanguage
     }
 
