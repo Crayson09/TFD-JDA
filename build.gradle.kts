@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "de.crayson"
-version = "dev-SNAPSHOT"
+version = "v1.0.0"
 
 repositories {
     mavenCentral()
