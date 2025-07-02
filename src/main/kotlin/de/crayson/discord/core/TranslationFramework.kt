@@ -4,7 +4,7 @@ import de.crayson.discord.core.MessageBuilder.Message
 import de.crayson.discord.lang.Languages
 import net.dv8tion.jda.api.entities.Member
 
-class TranslationFramework(val primary: Languages, val secondary: Languages) {
+class TranslationFramework(primary: Languages, secondary: Languages) {
 
     companion object {
         lateinit var primaryLanguage: Languages
